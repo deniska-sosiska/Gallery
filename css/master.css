@@ -10,21 +10,107 @@ body {
 .container {
   width: 1100px;
   margin: 0 auto;
-  height: 100vh;
-  border-left: solid 1px #ffd399;
-  border-right: solid 1px #ffd399;
+  padding: 1px 0px;
+  min-height: 100vh;
+  border-left: solid 1px #ffc880;
+  border-right: solid 1px #ffc880;
 }
 /*==============================*/
 .content {
+  padding: 0px auto;
 }
 .content_title {
   font-size: 34px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   /* border: solid 1px; */
   text-align: center;
 }
 #content_block {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   flex-wrap: wrap;
 }
+.image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 15px 18px;
+  padding: 15px;
+  background-color: #fff;
+  padding-bottom: 25px;
+}
+.image > img {
+  width: 280px;
+  height: 315px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0px 18px;
+  margin-bottom: 10px;
+}
+.buttons > button {
+  font-size: 16px;
+  padding: 8px 14px;
+  margin: 0 20px;
+  background: #ff9100;
+  border: solid 0px;
+  border-radius: 15px;
+  outline: none;
+}
+.buttons > button:hover {
+  background-color: #e68200;
+}
+.buttons > button:active {
+  background-color: #e68200;
+  font-size: 18px;
+  padding: 3px 10px;
+}
+
+.buttons > form {
+  padding: 30px;
+  border: solid 1px;
+  background-color: #fff;
+}
+.buttons > form > div {
+  display: flex;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+.buttons > form > div > p {
+  font-size: 24px;
+  margin-bottom: 15px;
+  flex-grow: 3;
+  text-align: center;
+}
+.buttons > form > div > label{
+  padding-right: 10px;
+  font-size: 19px;
+}
+.buttons > form > div > input {
+  font-size: 17px;
+  flex-grow: 3;
+
+}
+
+.buttons > form#newImgForm {
+  order: 1;
+  margin-top: 20px;
+  display: none;
+}
+/* .buttons > form#newImgForm > label,
+.buttons > form#newImgForm > input {
+  font-size: 16px;
+} */
+
+.buttons > form#chgImgForm {
+  order: 1;
+  margin-top: 20px;
+  display: none;
+}
+/* .buttons > form#chgImgForm > p,
+.buttons > form#chgImgForm > p > input {
+  font-size: 16px;
+} */

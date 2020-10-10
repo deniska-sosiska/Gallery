@@ -9,9 +9,45 @@
 </head>
 <body>
   <div class="main container">
-    <div class="content" style = "margin: 50px;">
+    <div class="content" style = "margin: 30px;">
       <div class="content_title">
         <p>Art gallery</p>
+      </div>
+      <div class="buttons">
+        <button id="add" onclick="newImagesForm()">Добавить</button>
+        <!-- ===========form1============== -->
+        <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="formAddImg(this)">
+          <div>
+            <p>Добавление картины</p>
+          </div>
+          <div>
+            <label for="nameFile">Введите название картины: </label>
+            <input type="text" name="nameFile" value="">
+          </div>
+          <div>
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Добавить картину">
+          </div>
+        </form>
+        <!-- ============================== -->
+        <button id="addFromArr" onclick="imagesArr()">Добавить картины с существующего массива</button>
+        <button id="addFromArr" onclick="changeImages()">Изменить</button>
+        <!-- ===========form2============== -->
+        <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="formChangeImg(this)">
+          <div>
+            <p>Изменение картины</p>
+          </div>
+          <div>
+            <label for="nameFile">Индекс картины которую нужно изменить</label>
+            <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
+          </div>
+          <div>
+            <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Добавить картину">
+          </div>
+        </form>
+        <!-- ============================== -->
+        <button id="del" onclick="delImages()">Удалить</button>
       </div>
       <div id="content_block"></div>
     </div>

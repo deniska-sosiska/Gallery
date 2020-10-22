@@ -8,55 +8,57 @@
   <link rel="stylesheet" href="./css/master.css">
 </head>
 <body>
-  <div class="main container">
+  <div class="container">
     <div class="content" style = "margin: 30px;">
       <div class="content_title">
         <p>Art gallery</p>
       </div>
-      <div class="buttons">
-        <button id="add" onclick="showAddForm()">Добавить</button>
-        <!-- ===========form1============== -->
-        <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false"> <!--" "-->
-          <div>
-            <p>Добавление картины</p>
-          </div>
-          <div>
-            <label for="nameFile">Введите название картины: </label>
-            <input type="text" name="nameFile" value="">
-          </div>
-          <div>
-            <input id="myFIle" type="file" name="file" accept="image/*"> <!--onchange="addImgForm(this.files)"-->
-            <input type="submit" value="Добавить картину" onclick="addImgForm()">
-
-          </div>
-        </form>
-        <!-- ============================== -->
-        <button id="addFromArr" onclick="showChangeImages()">Изменить</button>
-        <!-- ===========form2============== -->
-        <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="formChangeImg(this)">
-          <div>
-            <p>Изменение картины</p>
-          </div>
-          <div>
-            <label for="nameFile">Индекс картины которую нужно изменить: </label>
-            <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
-          </div>
-          <div>
-            <label for="nameFile">Новое название картины: </label>
-            <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
-          </div>
-          <div>
-            <input type="file" name="file" accept="image/*">
-            <input type="submit" value="Добавить картину">
-          </div>
-        </form>
-        <!-- ============================== -->
-        <button id="del" onclick="btnDelImages()">Удалить</button>
+      <div id="theGallery">
+        <div class="buttons">
+          <button id="add" onclick="showAddForm()">Добавить</button>
+          <button id="clean" onclick="cleanStorageForm()">Очистить галерею</button>
+        </div>
+        <div class="forms">
+          <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false">
+            <div>
+              <p>Добавление картины</p>
+            </div>
+            <div>
+              <label for="nameFile">Название картины: </label>
+              <input id = "nameNewFile" type="text" name="nameFile" value="" placeholder="Необязательный параметр">
+            </div>
+            <div>
+              <label for="descFile">Описание картины: </label>
+              <input id = "descNewFile" type="text" name="descFile" value="" placeholder="Необязательный параметр">
+            </div>
+            <div>
+              <input id="myFIle" type="file" name="file" accept="image/*"> <!--onchange="addImgForm(this.files)"-->
+              <input type="submit" value="Добавить картину" onclick="addImgForm()">
+            </div>
+          </form>
+                <!-- ============================ -->
+          <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="formChangeImg(this); return false">
+            <div>
+              <p>Изменение картины</p>
+            </div>
+            <div>
+              <label for="nameFile">Индекс картины которую нужно изменить: </label>
+              <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
+            </div>
+            <div>
+              <label for="nameFile">Новое название картины: </label>
+              <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
+            </div>
+            <div>
+              <input type="file" name="file" accept="image/*">
+              <input type="submit" value="Добавить картину">
+            </div>
+          </form>
+        </div>
+        <div id="content_block"></div>
       </div>
-      <div id="content_block"></div>
       <!-- ================================================================ -->
-      <div class="buttons">
-        <button id="clean" onclick="cleanStorageForm()">Очистить галерею</button>
+      <div id="theAdditionalInformation">
       </div>
     </div>
   </div>

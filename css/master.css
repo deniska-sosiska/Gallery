@@ -1,3 +1,8 @@
+
+@font-face {
+  font-family: 'Comfortaa';
+  src:url('../fonts/Comfortaa-Regular.ttf');
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,10 +11,14 @@
 body {
   /* background-color: #ffd9a8; */
   background: url('../image/bg.jpg');
+  font-family: 'Comfortaa';
 }
-
+a {
+  color: black;
+  text-decoration: none;
+}
 .container {
-  width: 1100px;
+  width: 1200px;
   margin: 0 auto;
   padding: 1px 0px;
   min-height: 100vh;
@@ -33,20 +42,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 15px 18px;
+  margin: 15px 26px;
   padding: 15px;
+  padding-bottom: 0px;
   background: url('../image/bg_img.jpg');
   border-radius: 15px;
-  padding-bottom: 15px;
+  width: 325px;
 }
 .image > p {
-  font-family: 'MS Sans Serif';
-  font-size: 16px;
-  margin-top: 5px;
+  font-family: 'Comfortaa';
+  font-size: 18px;
+  margin: 9px 0px 6px 0px;
 }
 .image > img {
-  width: 280px;
-  height: 315px;
+  width: 290px;
+  height: 335px;
 }
 
 .buttons {
@@ -56,56 +66,77 @@ body {
   padding: 0px 18px;
   margin-bottom: 10px;
 }
-.buttons > button {
+.buttons >  button {
   font-size: 16px;
   padding: 8px 14px;
-  margin: 0 20px;
+  margin: 0 15px;
   background: #ff9100;
   border: solid 0px;
   border-radius: 15px;
   outline: none;
+  font-family: 'Comfortaa'
 }
-.buttons > button:hover {
+.buttons >  button:hover {
   background-color: #e68200;
 }
-.buttons > button:active {
-  background-color: #e68200;
-  font-size: 18px;
-  padding: 3px 10px;
+.buttons >  button:active {
+  background-color: #ccccff;
+  /* font-size: 18px; */
+  /* padding: 6.5px 9px; */
+}
+/*  */
+.buttons.inImages {
+  padding: 0px;
+  margin-bottom: 15px;
+  justify-content: space-between;
+}
+.buttons.inImages >  button {
+  font-size: 14px;
+  padding: 8px 12px;
+  margin: 0px;
+  border: solid 0px;
+  border-radius: 15px;
+  outline: none;
+  flex-grow: 2;
 }
 
-.buttons > form {
+.forms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.forms > form {
   padding: 30px;
   /* background: url('../image/bg_form.jpg'); */
   border-radius: 15px;
   border: solid 1px #d9d9d9;
   background-color: #f3f9eb;
 }
-.buttons > form > div {
+.forms > form > div {
   display: flex;
   margin-bottom: 10px;
   font-size: 20px;
 }
-.buttons > form > div > p {
+.forms > form > div > p {
   font-size: 24px;
   margin-bottom: 15px;
   flex-grow: 3;
   text-align: center;
 }
-.buttons > form > div > label{
+.forms > form > div > label{
   padding-right: 10px;
   font-size: 19px;
 }
-.buttons > form > div > input {
+.forms > form > div > input {
   font-size: 17px;
   flex-grow: 3;
 }
-.buttons > form#newImgForm,
-.buttons > form#chgImgForm {
-  order: 1;
+.forms > form#newImgForm,
+.forms > form#chgImgForm {
   margin-top: 20px;
+  width: 550px;
   display: none;
 }
-#clean {
+#theAdditionalInformation {
   display: none;
 }

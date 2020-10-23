@@ -1,6 +1,7 @@
 //=============================================================
 let $clean = document.querySelector('#clean')
 let $myFIle = document.querySelector('#myFIle')
+let $forContent = document.querySelector('#forContent')
 let $newImgForm = document.querySelector('#newImgForm')
 let $theGallery = document.querySelector('#theGallery')
 let $chgImgForm = document.querySelector('#chgImgForm')
@@ -44,7 +45,7 @@ const addImgForm = () => {
   let $files = document.querySelector('#myFIle').files
   for(let i = 0; i < $files.length; i++){
     let file = $files[i]
-    let info, fileName, sizeW, sizeH, format, description
+    let info, fileName, sizeW, sizeH, format, description,fileSize, date
     var img = new Image()
     img.onload = function () {
       sizeW = this.width; sizeH = this.height;
@@ -58,9 +59,17 @@ const addImgForm = () => {
       if (sizeW > sizeH) { format = "Альбом"}
       else if (sizeW < sizeH) { format = "Портрет"}
       else { format = "Квадрат"}
-      //Для названия картины
-      if (!$descNewFile.value) {description = '*Без описания*'}
-      else {description = $descNewFile.value}
+      //Для описания картины
+      description = $descNewFile.value ?  $descNewFile.value : '*Без описания*'
+      //Для размера картины
+      if ((file.size / 1024) > 1) {
+        fileSize = file.size / 1024 //Становится КБ
+        if ((fileSize / 1024) > 1) {  fileSize = (fileSize / 1024) + 'МБ' } //Становится МБ
+        else (fileSize += 'КБ')
+      }
+      else {fileSize = file.size + 'Байт' }
+      //Для размера картины
+      date = file.lastModifiedDate.getDate() + '.' + file.lastModifiedDate.getMonth() + '.' + file.lastModifiedDate.getFullYear()
       formatObj = {
         format: format,
         sizeW: sizeW,
@@ -69,15 +78,15 @@ const addImgForm = () => {
       info = {
         name: fileName,
         formatObj: formatObj,
-        size: file.size,
+        size: fileSize,
         mimetype: file.type.slice(6),
-        date: file.lastModifiedDate.getDate(),
+        date: date,
         description: description
       }
       var reader = new FileReader();
       reader.onload = (function() {
         let objImg = {link: reader.result, info: info}
-        console.log('Новый объект: ', objImg)
+        console.log('Новый объект: \n', objImg)
         transactions(db, 'add', objImg)
 
         $myFIle.type = ''; $myFIle.type = 'file' // для сброса информации
@@ -148,7 +157,7 @@ const updateDisplay = (db) => {
   req.onerror = (event) => {
     console.log('error in cursor request ' + event.target.errorCode)
   }
-  ts.oncomplete = () => { console.log('updated') }
+  ts.oncomplete = () => { console.log('Updated') }
   ts.onerror = (event) => { console.log('error with transaction: update') }
 }
 
@@ -156,27 +165,39 @@ const updateDisplay = (db) => {
 //===============================================================
 const getObjFromDB = (objectForAddInfo) => {
   let html = `
-    <div class="AddtlInform">
-      <div class="AddtlInform__image">
+    <div class="addtlInform">
+      <div class="addtlInform__image">
         <img src="${objectForAddInfo.link}" title="${objectForAddInfo.info.name}">
       </div>
-      <div class="AddtlInform__content">
-        <div class="AddtlInform__content__title">
-          <p>Дополнительная информация</p>
+      <div class="addtlInform__title">
+        <p>Дополнительная информация</p>
+      </div>
+      <div class="addtlInform__content">
+        <div><p class = "for_p">Название картины:</p><p>${objectForAddInfo.info.name}</p></div>
+        <div><p class = "for_p">Описание: </p><p class="da">${objectForAddInfo.info.description}</p></div>
+        <div><p class = "for_p">Дата создания: </p><p>${objectForAddInfo.info.date}</p></div>
+        <div>
+          <p class = "for_p">Формат, выс/шир: </p>
+          <p>${objectForAddInfo.info.formatObj.format}, ${objectForAddInfo.info.formatObj.sizeH}/${objectForAddInfo.info.formatObj.sizeW}</p>
         </div>
-        <div class="AddtlInform__content__body">
-          <p>Название картины: ${objectForAddInfo.info}</p>
-          <p>Формат: ${objectForAddInfo.info.formatObj.format}</p>
-          <p>Высота/Ширина: ${objectForAddInfo.info.formatObj.sizeH}/${objectForAddInfo.info.formatObj.sizeW}</p>
-          <p>Вес: ${objectForAddInfo.info.size}</p>
-          <p>Mimetype: ${objectForAddInfo.info.mimetype}</p>
-          <p>Дата создания: ${objectForAddInfo.info.date}</p>
-          <p>Описание: ${objectForAddInfo.info.description}</p>
+        <div>
+          <p class = "for_p">Расширение файла: </p>
+          <p>${objectForAddInfo.info.mimetype}</p>
         </div>
+        <div>
+          <p class = "for_p">Вес: </p>
+          <p>${objectForAddInfo.info.size}</p>
+        </div>
+      </div>
+      <div class = "buttons inAddInfo">
+        <button onclick="backToTheGallery()">Вернуться</button>
+        <button onclick="showChangeImages()">Изменить</button>
+        <button><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}">Скачать</a></button>
+        <button onclick="btnDelImages()">Удалить</button>
       </div>
     </div>
   `;
-  $theAdditionalInformation.innerHTML = html
+  $forContent.innerHTML = html
 }
 const getKey = (db, key) => {
   let objectForAddInfo = {}
@@ -185,7 +206,7 @@ const getKey = (db, key) => {
   let req = store.get(key)
   req.onsuccess = (event) => {
     objectForAddInfo = event.target.result
-    getObjFromDB(objectForAddInfo)
+    getObjFromDB(objectForAddInfo, key)
   }
   ts.oncomplete = () => { console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo) }
   ts.onerror = (event) => { console.log('error with transaction: objectForAddInfo') }
@@ -196,6 +217,12 @@ const showAdditionalInfo = (itemID) => {
   getKey(db, itemID)
   $theAdditionalInformation.style.display = 'block'
 }
+const backToTheGallery = () => {
+  $theGallery.style.display = 'block'
+  $theAdditionalInformation.style.display = 'none'
+  $forContent.innerHTML = ''
+}
+
 //================================================================
 function newImage(item, itemID) {
   let nameFile
@@ -211,10 +238,3 @@ function newImage(item, itemID) {
   </div>
   `
 }
-// <div class = "buttons inImages">
-//   <button id="addFromArr" onclick="showChangeImages()">Изменить</button>
-//   <button id="download"><a download href="${item.link}">Скачать</a></button>
-//   <button id="del" onclick="btnDelImages()">Удалить</button>
-// </div>
-// <p>Формат: ${item.info.formatObj.format}</p>
-// <p>Высота/Ширина: ${item.info.formatObj.sizeH}/${item.info.formatObj.sizeW}</p>

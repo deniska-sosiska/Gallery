@@ -96,7 +96,17 @@ a {
   margin: 0px;
   border: solid 0px;
   border-radius: 15px;
-  outline: none;
+  flex-grow: 2;
+}
+.buttons.inAddInfo {
+  padding: 0px;
+  margin: 15px 0px 0px 0;
+  justify-content: space-between;
+}
+.buttons.inAddInfo >  button {
+  font-size: 14px;
+  padding: 8px 12px;
+  margin: 0px 10px;
   flex-grow: 2;
 }
 
@@ -137,6 +147,48 @@ a {
   width: 550px;
   display: none;
 }
+.chgImgForm {
+  margin: 0px 0px 0px 0px;
+}
 #theAdditionalInformation {
   display: none;
+}
+.addtlInform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.addtlInform__image > img {
+  max-width: 1200px;
+}
+.addtlInform__title {
+  text-align: center;
+  font-size: 24px;
+  margin: 20px 0px;
+}
+.addtlInform__content {
+  background: url('../image/bg_img.jpg');
+  padding: 15px;
+  border-radius: 15px;
+  max-width: 500px;
+  flex-wrap: wrap;
+}
+.da {
+  /* flex-grow: 0; */
+}
+.addtlInform__content > div {
+  display: flex;
+  font-size: 18px;
+  margin-top: 8px;
+}
+.addtlInform__content > div > p.for_p {
+  width: 210px;
+  margin-right: 20px;
+  flex-shrink: 0;
+  justify-content: flex-end;
+}
+.addtlInform__image > img {
+  background: url('../image/bg_img.jpg');
+  padding: 15px;
+  border-radius: 15px;
 }

@@ -3,15 +3,15 @@ let $clean = document.querySelector('#clean')
 let $myFIle = document.querySelector('#myFIle')
 let $forContent = document.querySelector('#forContent')
 let $newImgForm = document.querySelector('#newImgForm')
-let $findByName = document.querySelector('#findByName')
 let $theGallery = document.querySelector('#theGallery')
 let $chgImgForm = document.querySelector('#chgImgForm')
 let $content = document.querySelector('#content_block')
 let $nameNewFile = document.querySelector('#nameNewFile')
 let $descNewFile = document.querySelector('#descNewFile')
-let $findByNameinput = document.querySelector('#findByNameinput')
 let $findByNameForm = document.querySelector('#findByNameForm')
 let $inputChangeName = document.querySelector('#inputChangeName')
+let $findByNameinput = document.querySelector('#findByNameinput')
+let $findByNameButton = document.querySelector('#findByNameButton')
 let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
 
@@ -49,10 +49,12 @@ request.onsuccess = function(event) {
 //===================================================================
 const showAddForm = () => {
   $newImgForm.style.display = 'block'
+  findByNameHideForm()
 }
 const showChangeImages = (id) => {
   // $chgImgForm = document.querySelector('#chgImgForm')
   $chgImgForm.style.display = 'block'
+  document.querySelector('#chgImgFormlink').click()
 }
 
 var url = window.URL || window.webkitURL;
@@ -159,24 +161,33 @@ const formChangeImg = (id) => {
 }
 
 const findByNameFunc = () => {
-  console.log('change')
-  updateDisplay(db, $findByName.value)
+  updateDisplay(db, $findByNameinput.value)
 }
 let boolForFind = false
-const findByName = () => {
+const findByNameShowForm = () => {
   if (boolForFind) {
     $findByNameForm.style.display = 'none'
-    $findByNameinput.textContent = 'Предполагаемое название картины: '
-    $findByNameinput.style.background = '#ff9100'
+    $findByNameButton.textContent = 'Найти по названию'
+    $findByNameButton.style.background = '#ff9100'
+    $findByNameinput.value = ''
     boolForFind = false
     updateDisplay(db)
   }
   else {
+    resetTheNewImageForm()
     $findByNameForm.style.display = 'block'
-    $findByNameinput.textContent = 'Отмена'
-    $findByNameinput.style.background = '#ccccff'
+    $findByNameButton.textContent = 'Отмена'
+    $findByNameButton.style.background = '#ccccff'
     boolForFind = true
   }
+}
+const findByNameHideForm = () => {
+  $findByNameForm.style.display = 'none'
+  $findByNameButton.textContent = 'Найти по названию'
+  $findByNameButton.style.background = '#ff9100'
+  $findByNameinput.value = ''
+  boolForFind = false
+  updateDisplay(db)
 }
    //Вызов ф. удаление картины по индексу
 const btnDelImages = (id) => {
@@ -236,7 +247,10 @@ const updateDisplay = (db, findName) => {
       if (cursor != null) {
         allImages.push(cursor.value);
         cursor.continue()
-      } else {  outptHtml(allImages)  }
+      } else {
+        outptHtml(allImages);
+        document.querySelector('#totalFiles').textContent = allImages.length
+      }
     }
     else {
       if (cursor != null) {
@@ -282,10 +296,10 @@ const createAddInfo = (objectForAddInfo) => {
         </div>
       </div>
       <div class = "buttons inAddInfo">
-        <button onclick="backToTheGallery(); resetTheChangeForm()">Вернуться</button>
-        <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить</button>
+        <button onclick="findByNameHideForm(); backToTheGallery(); resetTheChangeForm()">Вернуться</button>
+        <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить<a id="chgImgFormlink" href="#chgImgForm"></a></button>
         <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}"></a>Скачать</button>
-        <button onclick="btnDelImages(${objectForAddInfo.id})">Удалить</button>
+        <button onclick="btnDelImages(${objectForAddInfo.id}); findByNameHideForm()">Удалить</button>
       </div>
     </div>
   `;

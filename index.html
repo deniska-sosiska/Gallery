@@ -16,16 +16,20 @@
       <div id="theGallery">
         <div class="buttons">
           <button  onclick="showAddForm()">Добавить</button>
-          <button id = "findByNameinput" onclick="findByName()">Найти по названию</button>
+                <!--  -->
+          <button id = "findByNameButton" onclick="findByNameShowForm()">Найти по названию</button>
+                <!--  -->
           <button  onclick="cleanStorageForm()">Очистить галерею</button>
         </div>
         <div class="forms">
+                    <!--  -->
           <form id = "findByNameForm" onsubmit="return false">
             <div>
               <label for="findByName">Предполагаемое название картины: </label>
-              <input id = "findByName" type="text" oninput="findByNameFunc()" placeholder=" Только в активной форме">
+              <input id = "findByNameinput" type="text" oninput="findByNameFunc()" placeholder=" Только в активной форме">
             </div>
           </form>
+                      <!--  -->
           <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false">
             <div>
               <p>Добавление картины</p>
@@ -44,13 +48,15 @@
             </div>
           </form>
         </div>
-        <div id="content_block"></div>
+        <div id="content_block">
+        </div>
+        <p style="text-align: center;">Доступно хранилища: <span>4</span> всего файлов: <span id = "totalFiles">0</span> файлов</p>
       </div>
       <!-- ================================================================ -->
       <div id="theAdditionalInformation">
         <div id="forContent"></div>
         <div class="forms">
-          <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="return false">
+          <form enctype="multipart/form-data" method="post" name = "chgImgForm" id="chgImgForm" onsubmit="return false">
             <div>
               <p>Изменение картины</p>
             </div>
@@ -64,7 +70,7 @@
             </div>
             <div id = "forButtons">
               <input type="button" onclick = "resetTheForm()" value="Отмена" style = "width: 110px;">
-              <input type="submit" onclick = "formChangeImg()" value="Добавить картину" style = "width: 150px; margin-left: 30px;">
+              <input type="submit" onclick = "formChangeImg()" value="Изменить картину" style = "width: 150px; margin-left: 30px;">
             </div>
           </form>
         </div>

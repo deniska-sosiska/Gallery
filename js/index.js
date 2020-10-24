@@ -1,4 +1,5 @@
-//=============================================================
+//=======Var===================================================
+//begin
 let $clean = document.querySelector('#clean')
 let $myFIle = document.querySelector('#myFIle')
 let $forContent = document.querySelector('#forContent')
@@ -15,6 +16,7 @@ let $findByNameinput = document.querySelector('#findByNameinput')
 let $findByNameButton = document.querySelector('#findByNameButton')
 let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
+//end;
 //======================IndexedDB==============================
 let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
 
@@ -32,9 +34,9 @@ request.onupgradeneeded = function(event){
 }
 request.onsuccess = function(event) {
   db = event.target.result
-  updateDisplay(db)
+  updateDisplay()
 }
-//===================================================================
+//============Скрытие и показ форм=========================================
 
 function showChangeImages(id) { //Показать форму изменения
   $chgImgForm.style.display = 'block'
@@ -42,7 +44,7 @@ function showChangeImages(id) { //Показать форму изменения
 }
 
 let boolForNewImg = false
-function showAddForm() {
+function showAddForm() { //Показать форму добавления
   if (!boolForNewImg) {
     resetTheFindForm()
     $newImgForm.style.display = 'block'
@@ -59,12 +61,12 @@ function showAddForm() {
     $myFIle.type = ''
     $myFIle.type = 'file'
     boolForNewImg = false
-    updateDisplay(db)
+    updateDisplay()
   }
 }
 
 let boolForFind = false
-function findByNameShowForm() {
+function findByNameShowForm() { //Показать форму поиска
   if (!boolForFind) {
     resetTheNewImageForm()
     $findByNameForm.style.display = 'block'
@@ -78,11 +80,11 @@ function findByNameShowForm() {
     $findByNameButton.style.background = ''
     $findByNameinput.value = ''
     boolForFind = false
-    updateDisplay(db)
+    updateDisplay()
   }
 }
 
-    //Сброс формs
+    //Сброс форм
 function resetTheNewImageForm() {
   $newImgForm.style.display = 'none'
   $showAddButton.textContent = 'Добавить'
@@ -104,12 +106,12 @@ function resetTheFindForm() {
   $findByNameButton.style.background = ''
   $findByNameinput.value = ''
   boolForFind = false
-  updateDisplay(db)
+  updateDisplay()
 }
 
 function showAdditionalInfo(itemID) { //Вывод доп. информации
   $theGallery.style.display = 'none'
-  getObj(itemID)
+  transactions('getObj', itemID, 'readonly')
   $theAdditionalInformation.style.display = 'block'
 }
 function backToTheGallery() { //Возврат к галерее
@@ -117,7 +119,6 @@ function backToTheGallery() { //Возврат к галерее
   $theAdditionalInformation.style.display = 'none'
   $forContent.innerHTML = ''
 }
-
 //=============Функции для запроса транзакций==========================
 var url = window.URL || window.webkitURL;
 const addImgForm = () => { //Вызов ф. добавление картины
@@ -177,7 +178,7 @@ const addImgForm = () => { //Вызов ф. добавление картины
       reader.onload = (function() {
         let objImg = {link: reader.result, info: info}
         console.log('Новый объект: \n', objImg)
-        transactions(db, 'add', objImg)
+        transactions('add', objImg)
 
         resetTheNewImageForm()  // для сброса информации
       })
@@ -214,52 +215,41 @@ const formChangeImg = (id) => { //Вызов ф. изменения картин
     description: newDescrip
   }
   objImgForChange = {link: objectForAddInfo.link, info: info, id: objectForAddInfo.id}
-  transactions(db, 'change', objImgForChange)
+  transactions('change', objImgForChange)
   createAddInfo(objImgForChange)
   resetTheChangeForm()
 }
 const btnDelImages = (id) => {  //Вызов ф. удаление картины
-  transactions(db, 'delete', id)
+  transactions('delete', id)
 }
 const cleanStorageForm = () => {  //Вызов ф. удаление картины
-  transactions(db, 'clean')
+  transactions('clean')
 }
 function findByNameFunc() { //Поиск по имени
-  updateDisplay(db, $findByNameinput.value)
+  updateDisplay($findByNameinput.value)
 }
-const outptHtml = (allImages) => {  //Вывод в html
-  $content.innerHTML = '';
-  allImages.forEach((item, i) => {
-    let html = ''
-    html = newImage(item, allImages[i].id)
-    $content.insertAdjacentHTML('afterbegin', html)
-  })
-}
+//============Транзакции=========================================
+let objectForAddInfo = {} //Получения объекта для доп. информации
 
-//==================================================================
-let objectForAddInfo = {}
-const getObj = (key) => {
-  let ts = db.transaction('images', 'readonly')
-  let store = ts.objectStore('images')
-  let req = store.get(key)
-  req.onsuccess = (event) => {
-    objectForAddInfo = event.target.result
-    createAddInfo(objectForAddInfo)
-  }
-  ts.oncomplete = () => { console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo) }
-  ts.onerror = (event) => { console.log('error with transaction: objectForAddInfo') }
-}
-//
-const transactions = (db, option, item = {}) => {
-  let ts = db.transaction('images', 'readwrite')
+const transactions = (option, item = {}, readonly) => { //Шаблон для транзакций
+  let valueForReadonly = !readonly ? 'readwrite' : 'readonly'
+  let ts = db.transaction('images', valueForReadonly)
   let store = ts.objectStore('images')
   if (option == 'add') {
     let newImg = {link: item.link, info: item.info}
-    let req = store.add(newImg)
+    store.add(newImg)
   }
   else if (option == 'change') {
     let changeImg = {link: item.link, info: item.info, id: item.id}
-    let req = store.put(changeImg)
+    store.put(changeImg)
+  }
+  if (option == 'getObj') {
+    let req = store.get(item)
+    req.onsuccess = (event) => {
+      objectForAddInfo = event.target.result
+      createAddInfo(objectForAddInfo)
+      console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo)
+    }
   }
   else if (option == 'delete') {
     const index = item
@@ -267,19 +257,16 @@ const transactions = (db, option, item = {}) => {
     req.onsuccess  = (event) => {
       $theAdditionalInformation.style.display = 'none'
       $theGallery.style.display = 'block'
-      console.log('Объект удален')
     }
   }
-  else if (option == 'clean') {
-      let req = store.clear();
-  }
-  ts.oncomplete = (event) => { updateDisplay(db) }
+  else if (option == 'clean') { store.clear(); }
+  ts.oncomplete = (event) => { updateDisplay() }
   ts.onerror = function(event) {
     console.log('error with transaction: ', option)
   }
 }
 
-const updateDisplay = (db, findName) => {
+const updateDisplay = (findName) => { //Получение всей информации из Бд и передача на вывод
   let ts = db.transaction('images', 'readonly')
   let store = ts.objectStore('images')
   let req = store.openCursor()
@@ -316,8 +303,31 @@ const updateDisplay = (db, findName) => {
 }
 
 
-//===============================================================
-const createAddInfo = (objectForAddInfo) => {
+//====== Для генерации карточек и доп. информации =====================
+function outptHtml(allImages) {  //Вывод в html
+  $content.innerHTML = '';
+  allImages.forEach((item, i) => {
+    let html = ''
+    html = newImage(item, allImages[i].id)
+    $content.insertAdjacentHTML('afterbegin', html)
+  })
+}
+function newImage(item, itemID) { // Карточка
+  let nameFile
+  if (item.info.name.length > 17) { nameFile = item.info.name.slice(0, 17) + '...' }
+  else {  nameFile = item.info.name }
+  return `
+  <div class="image">
+    <img src="${item.link}">
+    <p title = "Название">${nameFile}</p>
+    <div class = "buttons inImages">
+      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID}); resetTheNewImageForm(); resetTheFindForm()">Просмотреть доп. информацию</button>
+    </div>
+  </div>
+  `
+}
+
+function createAddInfo(objectForAddInfo){ //Доп. информация
   let html = `
     <div class="addtlInform">
       <div class="addtlInform__image">
@@ -357,20 +367,4 @@ const createAddInfo = (objectForAddInfo) => {
   $downloadButt.addEventListener('click', function() {
     $downloadButt.children[0].click()
   })
-}
-
-//================================================================
-function newImage(item, itemID) {
-  let nameFile
-  if (item.info.name.length > 17) { nameFile = item.info.name.slice(0, 17) + '...' }
-  else {  nameFile = item.info.name }
-  return `
-  <div class="image">
-    <img src="${item.link}">
-    <p title = "Название">${nameFile}</p>
-    <div class = "buttons inImages">
-      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID}); resetTheNewImageForm(); resetTheFindForm()">Просмотреть доп. информацию</button>
-    </div>
-  </div>
-  `
 }

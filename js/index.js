@@ -8,7 +8,15 @@ let $chgImgForm = document.querySelector('#chgImgForm')
 let $content = document.querySelector('#content_block')
 let $nameNewFile = document.querySelector('#nameNewFile')
 let $descNewFile = document.querySelector('#descNewFile')
+let $inputChangeName = document.querySelector('#inputChangeName')
+let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
+
+function resetTheForm() {
+  $inputChangeName.value = ''
+  $inputChangeDescript.value = ''
+  $chgImgForm.style.display = 'none'
+}
 //======================IndexedDB==============================
 let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
 
@@ -29,14 +37,12 @@ request.onsuccess = function(event) {
   updateDisplay(db)
 }
 //===================================================================
-
 const showAddForm = () => {
-  $chgImgForm.style.display = 'none'
-  $newImgForm.style.display = 'inline-block'
+  $newImgForm.style.display = 'block'
 }
-const showChangeImages = () => {
-  $newImgForm.style.display = 'none'
-  $chgImgForm.style.display = 'inline-block'
+const showChangeImages = (id) => {
+  // $chgImgForm = document.querySelector('#chgImgForm')
+  $chgImgForm.style.display = 'block'
 }
 
 var url = window.URL || window.webkitURL;
@@ -45,7 +51,7 @@ const addImgForm = () => {
   let $files = document.querySelector('#myFIle').files
   for(let i = 0; i < $files.length; i++){
     let file = $files[i]
-    let info, fileName, sizeW, sizeH, format, description,fileSize, date
+    let info, fileName, sizeW, sizeH, format, description,fileSize, date, x
     var img = new Image()
     img.onload = function () {
       sizeW = this.width; sizeH = this.height;
@@ -64,10 +70,15 @@ const addImgForm = () => {
       //Для размера картины
       if ((file.size / 1024) > 1) {
         fileSize = file.size / 1024 //Становится КБ
-        if ((fileSize / 1024) > 1) {  fileSize = (fileSize / 1024) + 'МБ' } //Становится МБ
-        else (fileSize += 'КБ')
+        if ((fileSize / 1024) > 1) {
+          x = (fileSize / 1024)
+          fileSize = x.toFixed(2) + 'МБ' } //Становится МБ
+        else {
+          x = fileSize.toFixed(2)
+          fileSize = x + 'КБ'  }
+
       }
-      else {fileSize = file.size + 'Байт' }
+      else {fileSize = file.size.toFixed(2) + 'Байт' }
       //Для размера картины
       date = file.lastModifiedDate.getDate() + '.' + file.lastModifiedDate.getMonth() + '.' + file.lastModifiedDate.getFullYear()
       formatObj = {
@@ -99,9 +110,47 @@ const addImgForm = () => {
     img.src = url.createObjectURL(file)
   }
 }
+
+
+const formChangeImg = (id) => {
+  let newName, newDescrip, info, formatObj
+  let newNameForChange = $inputChangeName.value
+  let newDescripForChange = $inputChangeDescript.value
+
+  if (!newNameForChange && !newDescripForChange) {
+     alert('Файл не был изменен, поскольку не было введенно новых данных')
+     resetTheForm()
+  }
+  if (!newNameForChange) {  newName = objectForAddInfo.info.name }
+  else {  newName = newNameForChange }
+  if (!newDescripForChange) {  newDescrip = objectForAddInfo.info.description }
+  else {  newDescrip = newDescripForChange }
+
+  formatObj = {
+    format: objectForAddInfo.info.formatObj.format,
+    sizeW: objectForAddInfo.info.formatObj.sizeW,
+    sizeH: objectForAddInfo.info.formatObj.sizeH
+  }
+  info = {
+    name: newName,
+    formatObj: formatObj,
+    size: objectForAddInfo.info.size,
+    mimetype: objectForAddInfo.info.mimetype,
+    date: objectForAddInfo.info.date,
+    description: newDescrip
+  }
+  objImgForChange = {link: objectForAddInfo.link, info: info, id: objectForAddInfo.id}
+  transactions(db, 'change', objImgForChange)
+  resetTheForm()
+  createAddInfo(objImgForChange)
+}
+
+
+
+
    //Вызов ф. удаление картины по индексу
-const btnDelImages = () => {
-  transactions(db, 'delete')
+const btnDelImages = (id) => {
+  transactions(db, 'delete', id)
 }   //Вызов ф. удаление картины по индексу
 const cleanStorageForm = () => {
   transactions(db, 'clean')
@@ -124,14 +173,18 @@ const transactions = (db, option, item = {}) => {
     let newImg = {link: item.link, info: item.info}
     let req = store.add(newImg)
   }
+  else if (option == 'change') {
+    let changeImg = {link: item.link, info: item.info, id: item.id}
+    let req = store.put(changeImg)
+  }
   else if (option == 'delete') {
-    const ind = parseInt(prompt('"Удаление по индексу": Картину с каким индексом нужно удалить? '))
-    let req = store.getAll()
-      req.onsuccess = (event) => {
-        let key = req.result;
-        let deleteRequest = store.delete(ind)
-        console.log(req.result)
-      }
+    const index = item
+    let req = store.delete(index)
+    req.onsuccess  = (event) => {
+      $theAdditionalInformation.style.display = 'none'
+      $theGallery.style.display = 'block'
+      console.log('Объект удален')
+    }
   }
   else if (option == 'clean') {
       let req = store.clear();
@@ -163,7 +216,7 @@ const updateDisplay = (db) => {
 
 
 //===============================================================
-const getObjFromDB = (objectForAddInfo) => {
+const createAddInfo = (objectForAddInfo) => {
   let html = `
     <div class="addtlInform">
       <div class="addtlInform__image">
@@ -191,22 +244,28 @@ const getObjFromDB = (objectForAddInfo) => {
       </div>
       <div class = "buttons inAddInfo">
         <button onclick="backToTheGallery()">Вернуться</button>
-        <button onclick="showChangeImages()">Изменить</button>
-        <button><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}">Скачать</a></button>
-        <button onclick="btnDelImages()">Удалить</button>
+        <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить</button>
+        <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}">Скачать</a></button>
+        <button onclick="btnDelImages(${objectForAddInfo.id})">Удалить</button>
       </div>
     </div>
   `;
   $forContent.innerHTML = html
+
+  let $downloadButt  = document.querySelector('#downloadButt')
+  $downloadButt.addEventListener('click', function() {
+    $downloadButt.children[0].click()
+  })
 }
-const getKey = (db, key) => {
-  let objectForAddInfo = {}
+
+let objectForAddInfo = {}
+const getObj = (db, key) => {
   let ts = db.transaction('images', 'readonly')
   let store = ts.objectStore('images')
   let req = store.get(key)
   req.onsuccess = (event) => {
     objectForAddInfo = event.target.result
-    getObjFromDB(objectForAddInfo, key)
+    createAddInfo(objectForAddInfo)
   }
   ts.oncomplete = () => { console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo) }
   ts.onerror = (event) => { console.log('error with transaction: objectForAddInfo') }
@@ -214,7 +273,7 @@ const getKey = (db, key) => {
 
 const showAdditionalInfo = (itemID) => {
   $theGallery.style.display = 'none'
-  getKey(db, itemID)
+  getObj(db, itemID)
   $theAdditionalInformation.style.display = 'block'
 }
 const backToTheGallery = () => {

@@ -43,21 +43,21 @@
       <div id="theAdditionalInformation">
         <div id="forContent"></div>
         <div class="forms">
-          <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="formChangeImg(this); return false">
+          <form enctype="multipart/form-data" method="post" id="chgImgForm" onsubmit="return false">
             <div>
               <p>Изменение картины</p>
             </div>
             <div>
-              <label for="nameFile">Индекс картины которую нужно изменить: </label>
-              <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
-            </div>
-            <div>
               <label for="nameFile">Новое название картины: </label>
-              <input id = "t_ind" type="text" name="nameFile" value="" maxlength = "4" size = "1">
+              <input id = "inputChangeName" type="text" name="nameFile" value="" placeholder="Достаточно одного параметра">
             </div>
             <div>
-              <input type="file" name="file" accept="image/*">
-              <input type="submit" value="Добавить картину">
+              <label for="nameFile">Новое описание картины: </label>
+              <input id = "inputChangeDescript" type="text" name="nameFile" value="" placeholder="Достаточно одного параметра">
+            </div>
+            <div id = "forButtons">
+              <input type="button" onclick = "resetTheForm()" value="Отмена" style = "width: 110px;">
+              <input type="submit" onclick = "formChangeImg()" value="Добавить картину" style = "width: 150px; margin-left: 30px;">
             </div>
           </form>
         </div>

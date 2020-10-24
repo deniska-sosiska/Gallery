@@ -109,14 +109,12 @@ a {
   margin: 0px 10px;
   flex-grow: 2;
 }
-
 .forms {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 .forms > form {
-  padding: 30px;
+  padding: 30px 30px 20px 30px;
   /* background: url('../image/bg_form.jpg'); */
   border-radius: 15px;
   border: solid 1px #d9d9d9;
@@ -134,7 +132,7 @@ a {
   text-align: center;
 }
 .forms > form > div > label{
-  padding-right: 10px;
+  padding-right: 15px;
   font-size: 19px;
 }
 .forms > form > div > input {
@@ -144,7 +142,7 @@ a {
 .forms > form#newImgForm,
 .forms > form#chgImgForm {
   margin-top: 20px;
-  width: 550px;
+  width: 600px;
   display: none;
 }
 .chgImgForm {
@@ -180,6 +178,11 @@ a {
   display: flex;
   font-size: 18px;
   margin-top: 8px;
+  border-bottom: 1px solid #7798bb;
+  align-items: flex-end;
+}
+.addtlInform__content > div:first-child {
+  margin-top: 0px;
 }
 .addtlInform__content > div > p.for_p {
   width: 210px;
@@ -191,4 +194,11 @@ a {
   background: url('../image/bg_img.jpg');
   padding: 15px;
   border-radius: 15px;
+}
+#forButtons {
+  justify-content: flex-end;
+}
+#forButtons > input {
+  flex-grow: 0;
+  border: 1px solid;
 }

@@ -12,7 +12,14 @@ let $inputChangeName = document.querySelector('#inputChangeName')
 let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
 
-function resetTheForm() {
+function resetTheNewImageForm() {
+  $newImgForm.style.display = 'none'
+  $nameNewFile.value = ''
+  $descNewFile.value = ''
+  $myFIle.type = ''
+  $myFIle.type = 'file'
+}
+function resetTheChangeForm() {
   $inputChangeName.value = ''
   $inputChangeDescript.value = ''
   $chgImgForm.style.display = 'none'
@@ -49,9 +56,15 @@ var url = window.URL || window.webkitURL;
 //Вызов ф. добавление картины по пути
 const addImgForm = () => {
   let $files = document.querySelector('#myFIle').files
+  if ($files.length == 0) {alert('Файл не выбран'); resetTheNewImageForm()}
   for(let i = 0; i < $files.length; i++){
     let file = $files[i]
     let info, fileName, sizeW, sizeH, format, description,fileSize, date, x
+    if (file.size >= 267386880) {  //ограничение на 255МБ
+      alert('Файл слишком большой')
+      resetTheNewImageForm()
+      break
+    }
     var img = new Image()
     img.onload = function () {
       sizeW = this.width; sizeH = this.height;
@@ -100,10 +113,7 @@ const addImgForm = () => {
         console.log('Новый объект: \n', objImg)
         transactions(db, 'add', objImg)
 
-        $myFIle.type = ''; $myFIle.type = 'file' // для сброса информации
-        $nameNewFile.value = ''; $descNewFile.value = '';
-        $newImgForm.style.display = 'none'
-        $clean.style.display = 'inline-block'
+        resetTheNewImageForm()  // для сброса информации
       })
       reader.readAsDataURL(file);
     }
@@ -119,7 +129,7 @@ const formChangeImg = (id) => {
 
   if (!newNameForChange && !newDescripForChange) {
      alert('Файл не был изменен, поскольку не было введенно новых данных')
-     resetTheForm()
+     resetTheChangeForm()
   }
   if (!newNameForChange) {  newName = objectForAddInfo.info.name }
   else {  newName = newNameForChange }
@@ -141,7 +151,7 @@ const formChangeImg = (id) => {
   }
   objImgForChange = {link: objectForAddInfo.link, info: info, id: objectForAddInfo.id}
   transactions(db, 'change', objImgForChange)
-  resetTheForm()
+  resetTheChangeForm()
   createAddInfo(objImgForChange)
 }
 
@@ -243,9 +253,9 @@ const createAddInfo = (objectForAddInfo) => {
         </div>
       </div>
       <div class = "buttons inAddInfo">
-        <button onclick="backToTheGallery()">Вернуться</button>
+        <button onclick="backToTheGallery(); resetTheChangeForm()">Вернуться</button>
         <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить</button>
-        <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}">Скачать</a></button>
+        <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}"></a>Скачать</button>
         <button onclick="btnDelImages(${objectForAddInfo.id})">Удалить</button>
       </div>
     </div>
@@ -292,7 +302,7 @@ function newImage(item, itemID) {
     <img src="${item.link}">
     <p title = "Название">${nameFile}</p>
     <div class = "buttons inImages">
-      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID})">Просмотреть доп. информацию</button>
+      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID}); resetTheNewImageForm()">Просмотреть доп. информацию</button>
     </div>
   </div>
   `

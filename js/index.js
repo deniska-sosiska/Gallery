@@ -3,11 +3,14 @@ let $clean = document.querySelector('#clean')
 let $myFIle = document.querySelector('#myFIle')
 let $forContent = document.querySelector('#forContent')
 let $newImgForm = document.querySelector('#newImgForm')
+let $findByName = document.querySelector('#findByName')
 let $theGallery = document.querySelector('#theGallery')
 let $chgImgForm = document.querySelector('#chgImgForm')
 let $content = document.querySelector('#content_block')
 let $nameNewFile = document.querySelector('#nameNewFile')
 let $descNewFile = document.querySelector('#descNewFile')
+let $findByNameinput = document.querySelector('#findByNameinput')
+let $findByNameForm = document.querySelector('#findByNameForm')
 let $inputChangeName = document.querySelector('#inputChangeName')
 let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
@@ -28,17 +31,17 @@ function resetTheChangeForm() {
 let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
 
 if (!window.indexedDB)
-  console.error('Ваш браузер не поддерживает indexedDB');
+  console.error('Ваш браузер не поддерживает indexedDB')
 let request = indexedDB.open("gallery", 1)
 let db
 
 request.onerror = function(event) {
   console.log('Ошибка с IDB: ', event.target.errorCode)
-};
+}
 request.onupgradeneeded = function(event){
   db = event.target.result
   let imagesStorage = db.createObjectStore('images', {keyPath: 'id', autoIncrement: true})
-};
+}
 request.onsuccess = function(event) {
   db = event.target.result
   updateDisplay(db)
@@ -155,9 +158,26 @@ const formChangeImg = (id) => {
   createAddInfo(objImgForChange)
 }
 
-
-
-
+const findByNameFunc = () => {
+  console.log('change')
+  updateDisplay(db, $findByName.value)
+}
+let boolForFind = false
+const findByName = () => {
+  if (boolForFind) {
+    $findByNameForm.style.display = 'none'
+    $findByNameinput.textContent = 'Предполагаемое название картины: '
+    $findByNameinput.style.background = '#ff9100'
+    boolForFind = false
+    updateDisplay(db)
+  }
+  else {
+    $findByNameForm.style.display = 'block'
+    $findByNameinput.textContent = 'Отмена'
+    $findByNameinput.style.background = '#ccccff'
+    boolForFind = true
+  }
+}
    //Вызов ф. удаление картины по индексу
 const btnDelImages = (id) => {
   transactions(db, 'delete', id)
@@ -205,17 +225,26 @@ const transactions = (db, option, item = {}) => {
   }
 }
 
-const updateDisplay = (db) => {
+const updateDisplay = (db, findName) => {
   let ts = db.transaction('images', 'readonly')
   let store = ts.objectStore('images')
   let req = store.openCursor()
   let allImages = []
   req.onsuccess = (event) => {
     let cursor = event.target.result;
-    if (cursor != null) {
-      allImages.push(cursor.value);
-      cursor.continue()
-    } else {  outptHtml(allImages)  }
+    if (!findName) {
+      if (cursor != null) {
+        allImages.push(cursor.value);
+        cursor.continue()
+      } else {  outptHtml(allImages)  }
+    }
+    else {
+      if (cursor != null) {
+        if (cursor.value.info.name.includes(findName))
+          allImages.push(cursor.value);
+        cursor.continue()
+      } else {  outptHtml(allImages)  }
+    }
   }
   req.onerror = (event) => {
     console.log('error in cursor request ' + event.target.errorCode)

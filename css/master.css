@@ -148,7 +148,8 @@ a {
 .chgImgForm {
   margin: 0px 0px 0px 0px;
 }
-#theAdditionalInformation {
+#theAdditionalInformation,
+#findByNameForm {
   display: none;
 }
 .addtlInform {

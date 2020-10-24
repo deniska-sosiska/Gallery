@@ -15,21 +15,28 @@
       </div>
       <div id="theGallery">
         <div class="buttons">
-          <button id="add" onclick="showAddForm()">Добавить</button>
-          <button id="clean" onclick="cleanStorageForm()">Очистить галерею</button>
+          <button  onclick="showAddForm()">Добавить</button>
+          <button id = "findByNameinput" onclick="findByName()">Найти по названию</button>
+          <button  onclick="cleanStorageForm()">Очистить галерею</button>
         </div>
         <div class="forms">
+          <form id = "findByNameForm" onsubmit="return false">
+            <div>
+              <label for="findByName">Предполагаемое название картины: </label>
+              <input id = "findByName" type="text" oninput="findByNameFunc()" placeholder=" Только в активной форме">
+            </div>
+          </form>
           <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false">
             <div>
               <p>Добавление картины</p>
             </div>
             <div>
               <label for="nameFile">Название картины: </label>
-              <input id = "nameNewFile" type="text" name="nameFile" value="" placeholder="Необязательный параметр">
+              <input id = "nameNewFile" type="text" name="nameFile" value="" placeholder=" Необязательный параметр">
             </div>
             <div>
               <label for="descFile">Описание картины: </label>
-              <input id = "descNewFile" type="text" name="descFile" value="" placeholder="Необязательный параметр">
+              <input id = "descNewFile" type="text" name="descFile" value="" placeholder=" Необязательный параметр">
             </div>
             <div>
               <input id="myFIle" type="file" name="file" accept="image/*"> <!--onchange="addImgForm(this.files)"-->
@@ -49,11 +56,11 @@
             </div>
             <div>
               <label for="nameFile">Новое название картины: </label>
-              <input id = "inputChangeName" type="text" name="nameFile" value="" placeholder="Достаточно одного параметра">
+              <input id = "inputChangeName" type="text" name="nameFile" value="" placeholder=" Достаточно одного параметра">
             </div>
             <div>
               <label for="nameFile">Новое описание картины: </label>
-              <input id = "inputChangeDescript" type="text" name="nameFile" value="" placeholder="Достаточно одного параметра">
+              <input id = "inputChangeDescript" type="text" name="nameFile" value="" placeholder=" Достаточно одного параметра">
             </div>
             <div id = "forButtons">
               <input type="button" onclick = "resetTheForm()" value="Отмена" style = "width: 110px;">

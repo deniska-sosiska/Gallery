@@ -9,7 +9,6 @@
   padding: 0;
 }
 html, body {
-  /* background-color: #ffd9a8; */
   height: 100vh;
   background: url('../image/bg.jpg');
   font-family: 'Comfortaa';
@@ -23,8 +22,6 @@ a {
   margin: 0 auto;
   padding: 1px 0px;
   min-height: 100vh;
-  /* border-left: solid 1px #ffc880; */
-  /* border-right: solid 1px #ffc880; */
 }
 /*==============================*/
 #theGallery {
@@ -34,7 +31,6 @@ a {
 }
 #forP {
   text-align: center;
-  /* flex-shrink: 0; */
 }
 .content {
   padding: 0px auto;
@@ -91,10 +87,7 @@ a {
 }
 .buttons >  button:active {
   background-color: #ccccff;
-  /* font-size: 18px; */
-  /* padding: 6.5px 9px; */
 }
-/*  */
 .buttons.inImages {
   padding: 0px;
   margin-bottom: 15px;
@@ -125,7 +118,6 @@ a {
 }
 .forms > form {
   padding: 30px 30px 20px 30px;
-  /* background: url('../image/bg_form.jpg'); */
   border-radius: 15px;
   border: solid 1px #d9d9d9;
   background-color: #f3f9eb;
@@ -181,9 +173,6 @@ a {
   border-radius: 15px;
   max-width: 500px;
   flex-wrap: wrap;
-}
-.da {
-  /* flex-grow: 0; */
 }
 .addtlInform__content > div {
   display: flex;

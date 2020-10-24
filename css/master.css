@@ -8,8 +8,9 @@
   margin: 0;
   padding: 0;
 }
-body {
+html, body {
   /* background-color: #ffd9a8; */
+  height: 100vh;
   background: url('../image/bg.jpg');
   font-family: 'Comfortaa';
 }
@@ -26,6 +27,15 @@ a {
   /* border-right: solid 1px #ffc880; */
 }
 /*==============================*/
+#theGallery {
+}
+.forFooter {
+  min-height: calc(100vh - 21vh)
+}
+#forP {
+  text-align: center;
+  /* flex-shrink: 0; */
+}
 .content {
   padding: 0px auto;
 }

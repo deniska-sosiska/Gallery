@@ -8,25 +8,13 @@ let $chgImgForm = document.querySelector('#chgImgForm')
 let $content = document.querySelector('#content_block')
 let $nameNewFile = document.querySelector('#nameNewFile')
 let $descNewFile = document.querySelector('#descNewFile')
+let $showAddButton = document.querySelector('#showAddButton')
 let $findByNameForm = document.querySelector('#findByNameForm')
 let $inputChangeName = document.querySelector('#inputChangeName')
 let $findByNameinput = document.querySelector('#findByNameinput')
 let $findByNameButton = document.querySelector('#findByNameButton')
 let $inputChangeDescript = document.querySelector('#inputChangeDescript')
 let $theAdditionalInformation = document.querySelector('#theAdditionalInformation')
-
-function resetTheNewImageForm() {
-  $newImgForm.style.display = 'none'
-  $nameNewFile.value = ''
-  $descNewFile.value = ''
-  $myFIle.type = ''
-  $myFIle.type = 'file'
-}
-function resetTheChangeForm() {
-  $inputChangeName.value = ''
-  $inputChangeDescript.value = ''
-  $chgImgForm.style.display = 'none'
-}
 //======================IndexedDB==============================
 let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
 
@@ -47,19 +35,92 @@ request.onsuccess = function(event) {
   updateDisplay(db)
 }
 //===================================================================
-const showAddForm = () => {
-  $newImgForm.style.display = 'block'
-  findByNameHideForm()
-}
-const showChangeImages = (id) => {
-  // $chgImgForm = document.querySelector('#chgImgForm')
+
+function showChangeImages(id) { //Показать форму изменения
   $chgImgForm.style.display = 'block'
   document.querySelector('#chgImgFormlink').click()
 }
 
+let boolForNewImg = false
+function showAddForm() {
+  if (!boolForNewImg) {
+    resetTheFindForm()
+    $newImgForm.style.display = 'block'
+    $showAddButton.textContent = 'Отмена'
+    $showAddButton.style.background = '#ccccff'
+    boolForNewImg = true
+  }
+  else {
+    $newImgForm.style.display = 'none'
+    $showAddButton.textContent = 'Добавить'
+    $showAddButton.style.background = ''
+    $nameNewFile.value = ''
+    $descNewFile.value = ''
+    $myFIle.type = ''
+    $myFIle.type = 'file'
+    boolForNewImg = false
+    updateDisplay(db)
+  }
+}
+
+let boolForFind = false
+function findByNameShowForm() {
+  if (!boolForFind) {
+    resetTheNewImageForm()
+    $findByNameForm.style.display = 'block'
+    $findByNameButton.textContent = 'Отмена'
+    $findByNameButton.style.background = '#ccccff'
+    boolForFind = true
+  }
+  else {
+    $findByNameForm.style.display = 'none'
+    $findByNameButton.textContent = 'Найти по названию'
+    $findByNameButton.style.background = ''
+    $findByNameinput.value = ''
+    boolForFind = false
+    updateDisplay(db)
+  }
+}
+
+    //Сброс формs
+function resetTheNewImageForm() {
+  $newImgForm.style.display = 'none'
+  $showAddButton.textContent = 'Добавить'
+  $showAddButton.style.background = ''
+  $nameNewFile.value = ''
+  $descNewFile.value = ''
+  $myFIle.type = ''
+  $myFIle.type = 'file'
+  boolForNewImg = false
+}
+function resetTheChangeForm() {
+  $inputChangeName.value = ''
+  $inputChangeDescript.value = ''
+  $chgImgForm.style.display = 'none'
+}
+function resetTheFindForm() {
+  $findByNameForm.style.display = 'none'
+  $findByNameButton.textContent = 'Найти по названию'
+  $findByNameButton.style.background = ''
+  $findByNameinput.value = ''
+  boolForFind = false
+  updateDisplay(db)
+}
+
+function showAdditionalInfo(itemID) { //Вывод доп. информации
+  $theGallery.style.display = 'none'
+  getObj(itemID)
+  $theAdditionalInformation.style.display = 'block'
+}
+function backToTheGallery() { //Возврат к галерее
+  $theGallery.style.display = 'block'
+  $theAdditionalInformation.style.display = 'none'
+  $forContent.innerHTML = ''
+}
+
+//=============Функции для запроса транзакций==========================
 var url = window.URL || window.webkitURL;
-//Вызов ф. добавление картины по пути
-const addImgForm = () => {
+const addImgForm = () => { //Вызов ф. добавление картины
   let $files = document.querySelector('#myFIle').files
   if ($files.length == 0) {alert('Файл не выбран'); resetTheNewImageForm()}
   for(let i = 0; i < $files.length; i++){
@@ -125,9 +186,7 @@ const addImgForm = () => {
     img.src = url.createObjectURL(file)
   }
 }
-
-
-const formChangeImg = (id) => {
+const formChangeImg = (id) => { //Вызов ф. изменения картины
   let newName, newDescrip, info, formatObj
   let newNameForChange = $inputChangeName.value
   let newDescripForChange = $inputChangeDescript.value
@@ -156,48 +215,19 @@ const formChangeImg = (id) => {
   }
   objImgForChange = {link: objectForAddInfo.link, info: info, id: objectForAddInfo.id}
   transactions(db, 'change', objImgForChange)
-  resetTheChangeForm()
   createAddInfo(objImgForChange)
+  resetTheChangeForm()
 }
-
-const findByNameFunc = () => {
+const btnDelImages = (id) => {  //Вызов ф. удаление картины
+  transactions(db, 'delete', id)
+}
+const cleanStorageForm = () => {  //Вызов ф. удаление картины
+  transactions(db, 'clean')
+}
+function findByNameFunc() { //Поиск по имени
   updateDisplay(db, $findByNameinput.value)
 }
-let boolForFind = false
-const findByNameShowForm = () => {
-  if (boolForFind) {
-    $findByNameForm.style.display = 'none'
-    $findByNameButton.textContent = 'Найти по названию'
-    $findByNameButton.style.background = '#ff9100'
-    $findByNameinput.value = ''
-    boolForFind = false
-    updateDisplay(db)
-  }
-  else {
-    resetTheNewImageForm()
-    $findByNameForm.style.display = 'block'
-    $findByNameButton.textContent = 'Отмена'
-    $findByNameButton.style.background = '#ccccff'
-    boolForFind = true
-  }
-}
-const findByNameHideForm = () => {
-  $findByNameForm.style.display = 'none'
-  $findByNameButton.textContent = 'Найти по названию'
-  $findByNameButton.style.background = '#ff9100'
-  $findByNameinput.value = ''
-  boolForFind = false
-  updateDisplay(db)
-}
-   //Вызов ф. удаление картины по индексу
-const btnDelImages = (id) => {
-  transactions(db, 'delete', id)
-}   //Вызов ф. удаление картины по индексу
-const cleanStorageForm = () => {
-  transactions(db, 'clean')
-  $clean.style.display = 'none'
-}   //Вывод в html
-const outptHtml = (allImages) => {
+const outptHtml = (allImages) => {  //Вывод в html
   $content.innerHTML = '';
   allImages.forEach((item, i) => {
     let html = ''
@@ -207,6 +237,19 @@ const outptHtml = (allImages) => {
 }
 
 //==================================================================
+let objectForAddInfo = {}
+const getObj = (key) => {
+  let ts = db.transaction('images', 'readonly')
+  let store = ts.objectStore('images')
+  let req = store.get(key)
+  req.onsuccess = (event) => {
+    objectForAddInfo = event.target.result
+    createAddInfo(objectForAddInfo)
+  }
+  ts.oncomplete = () => { console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo) }
+  ts.onerror = (event) => { console.log('error with transaction: objectForAddInfo') }
+}
+//
 const transactions = (db, option, item = {}) => {
   let ts = db.transaction('images', 'readwrite')
   let store = ts.objectStore('images')
@@ -250,6 +293,11 @@ const updateDisplay = (db, findName) => {
       } else {
         outptHtml(allImages);
         document.querySelector('#totalFiles').textContent = allImages.length
+        navigator.storage.estimate().then(function(estimate) {
+          let freeStorageSpace = estimate.usage / estimate.quota
+          console.log('usage:', estimate.usage, 'quota:', estimate.quota, ' = ', (100 - freeStorageSpace) + '%')
+          document.querySelector('#freeStorageSpace').textContent = Math.floor(100 - freeStorageSpace) + '%'
+        })
       }
     }
     else {
@@ -296,10 +344,10 @@ const createAddInfo = (objectForAddInfo) => {
         </div>
       </div>
       <div class = "buttons inAddInfo">
-        <button onclick="findByNameHideForm(); backToTheGallery(); resetTheChangeForm()">Вернуться</button>
+        <button onclick="backToTheGallery(); resetTheChangeForm()">Вернуться</button>
         <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить<a id="chgImgFormlink" href="#chgImgForm"></a></button>
         <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}"></a>Скачать</button>
-        <button onclick="btnDelImages(${objectForAddInfo.id}); findByNameHideForm()">Удалить</button>
+        <button onclick="btnDelImages(${objectForAddInfo.id})">Удалить</button>
       </div>
     </div>
   `;
@@ -309,30 +357,6 @@ const createAddInfo = (objectForAddInfo) => {
   $downloadButt.addEventListener('click', function() {
     $downloadButt.children[0].click()
   })
-}
-
-let objectForAddInfo = {}
-const getObj = (db, key) => {
-  let ts = db.transaction('images', 'readonly')
-  let store = ts.objectStore('images')
-  let req = store.get(key)
-  req.onsuccess = (event) => {
-    objectForAddInfo = event.target.result
-    createAddInfo(objectForAddInfo)
-  }
-  ts.oncomplete = () => { console.log('Объект для просмотра дополнительной информации: \n', objectForAddInfo) }
-  ts.onerror = (event) => { console.log('error with transaction: objectForAddInfo') }
-}
-
-const showAdditionalInfo = (itemID) => {
-  $theGallery.style.display = 'none'
-  getObj(db, itemID)
-  $theAdditionalInformation.style.display = 'block'
-}
-const backToTheGallery = () => {
-  $theGallery.style.display = 'block'
-  $theAdditionalInformation.style.display = 'none'
-  $forContent.innerHTML = ''
 }
 
 //================================================================
@@ -345,7 +369,7 @@ function newImage(item, itemID) {
     <img src="${item.link}">
     <p title = "Название">${nameFile}</p>
     <div class = "buttons inImages">
-      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID}); resetTheNewImageForm()">Просмотреть доп. информацию</button>
+      <button id="showAdditionalInfo" onclick = "showAdditionalInfo(${itemID}); resetTheNewImageForm(); resetTheFindForm()">Просмотреть доп. информацию</button>
     </div>
   </div>
   `

@@ -9,48 +9,45 @@
 </head>
 <body>
   <div class="container">
-    <div class="content" style = "margin: 30px;">
+    <div class="content" style = "margin: 30px 30px 10px 30px;">
       <div class="content_title">
         <p>Art gallery</p>
       </div>
       <div id="theGallery">
-        <div class="buttons">
-          <button  onclick="showAddForm()">Добавить</button>
-                <!--  -->
-          <button id = "findByNameButton" onclick="findByNameShowForm()">Найти по названию</button>
-                <!--  -->
-          <button  onclick="cleanStorageForm()">Очистить галерею</button>
+        <div class="forFooter">
+          <div class="buttons">
+            <button id = "showAddButton" onclick="showAddForm()">Добавить</button>
+            <button id = "findByNameButton" onclick="findByNameShowForm()">Найти по названию</button>
+            <button  onclick="cleanStorageForm()">Очистить галерею</button>
+          </div>
+          <div class="forms">
+            <form id = "findByNameForm" onsubmit="return false">
+              <div>
+                <label for="findByName">Предполагаемое название картины: </label>
+                <input id = "findByNameinput" type="text" oninput="findByNameFunc()" placeholder=" Только в активной форме">
+              </div>
+            </form>
+            <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false">
+              <div>
+                <p>Добавление картины</p>
+              </div>
+              <div>
+                <label for="nameFile">Название картины: </label>
+                <input id = "nameNewFile" type="text" name="nameFile" value="" placeholder=" Необязательный параметр">
+              </div>
+              <div>
+                <label for="descFile">Описание картины: </label>
+                <input id = "descNewFile" type="text" name="descFile" value="" placeholder=" Необязательный параметр">
+              </div>
+              <div>
+                <input id="myFIle" type="file" name="file" accept="image/*"> <!--onchange="addImgForm(this.files)"-->
+                <input type="submit" value="Добавить картину" onclick="addImgForm()">
+              </div>
+            </form>
+          </div>
+          <div id="content_block"></div>
         </div>
-        <div class="forms">
-                    <!--  -->
-          <form id = "findByNameForm" onsubmit="return false">
-            <div>
-              <label for="findByName">Предполагаемое название картины: </label>
-              <input id = "findByNameinput" type="text" oninput="findByNameFunc()" placeholder=" Только в активной форме">
-            </div>
-          </form>
-                      <!--  -->
-          <form enctype="multipart/form-data" method="post" id="newImgForm" onsubmit="return false">
-            <div>
-              <p>Добавление картины</p>
-            </div>
-            <div>
-              <label for="nameFile">Название картины: </label>
-              <input id = "nameNewFile" type="text" name="nameFile" value="" placeholder=" Необязательный параметр">
-            </div>
-            <div>
-              <label for="descFile">Описание картины: </label>
-              <input id = "descNewFile" type="text" name="descFile" value="" placeholder=" Необязательный параметр">
-            </div>
-            <div>
-              <input id="myFIle" type="file" name="file" accept="image/*"> <!--onchange="addImgForm(this.files)"-->
-              <input type="submit" value="Добавить картину" onclick="addImgForm()">
-            </div>
-          </form>
-        </div>
-        <div id="content_block">
-        </div>
-        <p style="text-align: center;">Доступно хранилища: <span>4</span> всего файлов: <span id = "totalFiles">0</span> файлов</p>
+        <p id = "forP">Свободного места в галерее: <span id = "freeStorageSpace">100%</span> | Всего файлов: <span id = "totalFiles">0</span> файлов</p>
       </div>
       <!-- ================================================================ -->
       <div id="theAdditionalInformation">

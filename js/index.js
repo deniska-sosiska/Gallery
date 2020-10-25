@@ -357,7 +357,7 @@ function createAddInfo(objectForAddInfo){ //Доп. информация
         <button onclick="backToTheGallery(); resetTheChangeForm()">Вернуться</button>
         <button onclick="showChangeImages(${objectForAddInfo.id})">Изменить<a id="chgImgFormlink" href="#chgImgForm"></a></button>
         <button id = "downloadButt"><a download = "${objectForAddInfo.info.name}" href="${objectForAddInfo.link}"></a>Скачать</button>
-        <button onclick="btnDelImages(${objectForAddInfo.id})">Удалить</button>
+        <button onclick="btnDelImages(${objectForAddInfo.id}); resetTheChangeForm()">Удалить</button>
       </div>
     </div>
   `;

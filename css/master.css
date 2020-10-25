@@ -84,9 +84,11 @@ a {
 }
 .buttons >  button:hover {
   background-color: #e68200;
+  cursor: pointer;
 }
 .buttons >  button:active {
   background-color: #ccccff;
+  cursor: pointer;
 }
 .buttons.inImages {
   padding: 0px;

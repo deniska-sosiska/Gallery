@@ -365,6 +365,7 @@ function createAddInfo(objectForAddInfo){ //Доп. информация
 
   let $downloadButt  = document.querySelector('#downloadButt')
   $downloadButt.addEventListener('click', function() {
+    resetTheChangeForm()
     $downloadButt.children[0].click()
   })
 }
